@@ -1,4 +1,5 @@
-EDIT: Now works with external assemblies aswell (for malware analysing)
+MY EDIT: Now works with external assemblies aswell (for malware analysing)
+**************************************************************************
 
 A hook proof of concept with no native dependencies. 
 You can hook .NET and Native (in progress) methods without using a C++ DLL or some other native project.
