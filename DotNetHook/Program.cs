@@ -51,18 +51,6 @@ namespace DotNetHook
             // We must instead use the ManagedHook "Call" method.
             _managedHook.Call<object>(null, $"Hooked: {str}");
         }
-
-        // Padding differs from release and debug mode sometimes. This below example is for x86.
-        private delegate int MessageBoxDelegate(IntPtr hwnd, String text, String title, uint type);
-        private static int MessageBoxReplacement(int pad1, int pad2, uint type, IntPtr titlePtr, IntPtr bodyPtr, IntPtr hwnd)
-        {
-            // This will not work in x64 config mode.
-
-            string title = titlePtr.ReadASCIINullTerminatedString();
-            string text = bodyPtr.ReadASCIINullTerminatedString();
-
-            return (int)_nativeHook.Call<MessageBoxDelegate, object>(hwnd, "Hooked (original: " + text + ")", title, type); ;
-        }
         #endregion
     }
 }
