@@ -29,9 +29,10 @@ namespace DotNetHook
             // Apply the hook.
             _managedHook.Apply();
 
-            // Call the method we hooked.
-            Console.WriteLine("Modified Hello");
-            
+            //The Hook will also apply to other assemblies loaded while in runtime.
+            AppDomain domain = AppDomain.CreateDomain("AnalyseMe");                     //Create a new AppDomain and load an external Assembly into it.
+            Assembly assembly = domain.Load(File.ReadAllBytes("HookMe.exe"));           
+            assembly.EntryPoint.Invoke(null, new object[] { new string[] { } });        //Invoke the EntryPoint
 
             // Remove the hook, alternatively you can use a "using" statement to dispose of the hook.
             _managedHook.Remove();
@@ -39,25 +40,6 @@ namespace DotNetHook
             Console.WriteLine("After Hook");
 
             Console.ReadLine();
-
-
-            // Native hook example.
-            MethodBase nativeReplacementMethod = "DotNetHook.Program".GetMethod("MessageBoxReplacement", BindingFlags.Static | BindingFlags.NonPublic);
-            _nativeHook = new NativeHook(new NativeMethod("MessageBoxA", "user32.dll"), nativeReplacementMethod);
-
-            MessageBoxA(IntPtr.Zero, "Before Hook", "The title!", 0);
-
-            // Apply the hook.
-            _nativeHook.Apply();
-
-            // Call the method hooked.
-            MessageBoxA(IntPtr.Zero, "Modified Hello", "The title!", 0);
-
-            // Remove the hook, alternatively you can use a "using" statement to dispose of the hook.
-            _nativeHook.Remove();
-
-            MessageBoxA(IntPtr.Zero, "After Hook", "The title!", 0);
-
         }
 
         private static void WriteLineReplacement(string str)
